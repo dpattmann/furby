@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/dpattmann/furby/auth/noop"
 	"log"
 
@@ -13,15 +14,17 @@ import (
 func main() {
 	c, err := config.NewConfig()
 
+	fmt.Println(c.ClientCredentials)
+
 	if err != nil {
 		log.Fatalf("Can't read config: %v", err)
 	}
 
 	clientCredentialsConfig := oauth2.NewClientCredentialsConfig(
-		c.ClientCredentialSettings.Id,
-		c.ClientCredentialSettings.Secret,
-		c.ClientCredentialSettings.Url,
-		c.ClientCredentialSettings.Scopes,
+		c.ClientCredentials.Id,
+		c.ClientCredentials.Secret,
+		c.ClientCredentials.Url,
+		c.ClientCredentials.Scopes,
 	)
 
 	noopAuthorizer := noop.NewAuthorizer()

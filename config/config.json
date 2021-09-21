@@ -1,8 +1,0 @@
-{
-  "clientcredentialsettings": {
-    "id": "ClientIdValue",
-    "secret": "ClientSecretValue",
-    "scopes": ["scopeA"],
-    "url": "http://localhost"
-  }
-}
