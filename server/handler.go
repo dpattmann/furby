@@ -11,13 +11,13 @@ import (
 
 type StoreHandler struct {
 	store store.Store
-	auth auth.Authorization
+	auth  auth.Authorization
 }
 
 func NewStoreHandler(store store.Store, auth auth.Authorization) StoreHandler {
 	return StoreHandler{
 		store: store,
-		auth: auth,
+		auth:  auth,
 	}
 }
 
@@ -37,6 +37,7 @@ func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error getting token from store"))
 		return
 	}
 

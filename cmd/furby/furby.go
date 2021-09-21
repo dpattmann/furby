@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"github.com/dpattmann/furby/auth/noop"
 	"log"
 
+	"github.com/dpattmann/furby/auth/noop"
 	"github.com/dpattmann/furby/config"
 	"github.com/dpattmann/furby/oauth2"
 	"github.com/dpattmann/furby/server"
@@ -13,8 +12,6 @@ import (
 
 func main() {
 	c, err := config.NewConfig()
-
-	fmt.Println(c.ClientCredentials)
 
 	if err != nil {
 		log.Fatalf("Can't read config: %v", err)
