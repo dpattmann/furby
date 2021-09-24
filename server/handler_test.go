@@ -8,10 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	authMock "github.com/dpattmann/furby/auth/mock"
-	storeMock "github.com/dpattmann/furby/store/mock"
-
-	"github.com/golang/mock/gomock"
+	"github.com/dpattmann/furby/mocks"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 )
@@ -20,17 +17,21 @@ var (
 	mockToken = oauth2.Token{AccessToken: "foo", RefreshToken: "bar"}
 )
 
+func setupMock(storeToken *oauth2.Token, storeError error, authReturn bool) (mockStore *mocks.Store, mockAuth *mocks.Authorization ){
+	// New mock controller
+	mockStore = &mocks.Store{}
+	mockStore.On("GetToken").Return(storeToken, storeError)
+
+	mockAuth = &mocks.Authorization{}
+	mockAuth.On("IsAuthorized", httptest.NewRequest(http.MethodGet, "/", nil)).Return(authReturn)
+
+	return
+}
+
 func Test_StoreHandler(t *testing.T) {
 	t.Run("Return valid token from store", func(t *testing.T) {
-		// New mock controller
-		mockController := gomock.NewController(t)
-		defer mockController.Finish()
-
-		// mock store and auth
-		mockStore := storeMock.NewStore(mockController)
-		mockStore.EXPECT().GetToken().Return(&mockToken, nil)
-		mockAuth := authMock.NewAuthorization(mockController)
-		mockAuth.EXPECT().IsAuthorized(httptest.NewRequest(http.MethodGet, "/", nil)).Return(true)
+		// setup Mock
+		mockStore, mockAuth := setupMock(&mockToken, nil, true)
 
 		// create StoreHandler with mocked store and auth
 		storeHandler := StoreHandler{store: mockStore, auth: mockAuth}
@@ -53,15 +54,8 @@ func Test_StoreHandler(t *testing.T) {
 	})
 
 	t.Run("Return internal server error and no valid token", func(t *testing.T) {
-		// New mock controller
-		mockController := gomock.NewController(t)
-		defer mockController.Finish()
-
-		// mock store and auth
-		mockStore := storeMock.NewStore(mockController)
-		mockStore.EXPECT().GetToken().Return(nil, errors.New("no Token found"))
-		mockAuth := authMock.NewAuthorization(mockController)
-		mockAuth.EXPECT().IsAuthorized(httptest.NewRequest(http.MethodGet, "/", nil)).Return(true)
+		// setup Mock
+		mockStore, mockAuth := setupMock(nil, errors.New("no token found"), true)
 
 		// create StoreHandler with mocked store and auth
 		storeHandler := StoreHandler{store: mockStore, auth: mockAuth}
@@ -79,15 +73,8 @@ func Test_StoreHandler(t *testing.T) {
 	})
 
 	t.Run("Return unauthorized if authorizer denies request", func(t *testing.T) {
-		// New mock controller
-		mockController := gomock.NewController(t)
-		defer mockController.Finish()
-
-		// mock store and auth
-		mockStore := storeMock.NewStore(mockController)
-		mockStore.EXPECT().GetToken().Return(nil, errors.New("no Token found"))
-		mockAuth := authMock.NewAuthorization(mockController)
-		mockAuth.EXPECT().IsAuthorized(httptest.NewRequest(http.MethodGet, "/", nil)).Return(false)
+		// setup Mock
+		mockStore, mockAuth := setupMock(&mockToken, nil, false)
 
 		// create StoreHandler with mocked store and auth
 		storeHandler := StoreHandler{store: mockStore, auth: mockAuth}
@@ -105,13 +92,8 @@ func Test_StoreHandler(t *testing.T) {
 	})
 
 	t.Run("Return 418 for any other request methode then GET", func(t *testing.T) {
-		// New mock controller
-		mockController := gomock.NewController(t)
-		defer mockController.Finish()
-
-		// mock store and auth
-		mockStore := storeMock.NewStore(mockController)
-		mockAuth := authMock.NewAuthorization(mockController)
+		// setup Mock
+		mockStore, mockAuth := setupMock(nil, nil, true)
 
 		// create StoreHandler with mocked store and auth
 		storeHandler := StoreHandler{store: mockStore, auth: mockAuth}
