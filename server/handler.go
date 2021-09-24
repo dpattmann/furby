@@ -3,9 +3,9 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dpattmann/furby/auth"
 	"net/http"
 
+	"github.com/dpattmann/furby/auth"
 	"github.com/dpattmann/furby/store"
 )
 

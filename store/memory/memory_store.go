@@ -6,6 +6,11 @@ import (
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
+	"golang.org/x/sync/singleflight"
+)
+
+var (
+	requestGroup singleflight.Group
 )
 
 func NewMemoryStore(c *clientcredentials.Config) *Store {
@@ -20,24 +25,32 @@ type Store struct {
 	client *clientcredentials.Config
 }
 
-func (s *Store) GetToken() (t *oauth2.Token, err error) {
+func (s *Store) GetToken() (*oauth2.Token, error) {
 	if s.token.Valid() {
 		return s.token, nil
 	}
 
-	t, err = s.getTokenFromServer()
+	token, err, _ := requestGroup.Do("GetToken", func() (token interface{}, err error) {
+		return s.updateToken()
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return token.(*oauth2.Token), err
+}
+
+func (s *Store) updateToken() (token *oauth2.Token, err error) {
+	token, err = s.client.Token(context.Background())
 
 	if err != nil {
 		return
 	}
 
-	s.setToken(t)
+	s.setToken(token)
 
 	return
-}
-
-func (s *Store) getTokenFromServer() (*oauth2.Token, error) {
-	return s.client.Token(context.Background())
 }
 
 func (s *Store) setToken(token *oauth2.Token) {
