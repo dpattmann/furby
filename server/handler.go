@@ -3,9 +3,10 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/dpattmann/furby/auth"
+	"log"
 	"net/http"
 
-	"github.com/dpattmann/furby/auth"
 	"github.com/dpattmann/furby/store"
 )
 
@@ -23,28 +24,24 @@ func NewStoreHandler(store store.Store, auth auth.Authorization) StoreHandler {
 
 func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		w.WriteHeader(http.StatusTeapot)
-		w.Write([]byte("I'm a teapot"))
+		writeResponse(w, http.StatusTeapot, "I'm a teapot")
 		return
 	}
 
 	if !t.auth.IsAuthorized(req) {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Not authorized"))
+		writeResponse(w, http.StatusUnauthorized, "Not authorized")
 	}
 
 	token, err := t.store.GetToken()
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error getting token from store"))
+		writeResponse(w, http.StatusInternalServerError, "Error getting token from store")
 		return
 	}
 
 	jsonToken, err := json.Marshal(token)
 
-	w.WriteHeader(200)
-	w.Write(jsonToken)
+	writeResponse(w, http.StatusOK, string(jsonToken))
 
 	return
 }
@@ -52,4 +49,13 @@ func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func Serve(tokenEndpointHandler StoreHandler) error {
 	fmt.Println("Server is running on port *:8080")
 	return http.ListenAndServe(":8080", tokenEndpointHandler)
+}
+
+func writeResponse(writer http.ResponseWriter, status int, message string) {
+	writer.WriteHeader(status)
+	_, err := writer.Write([]byte(message))
+
+	if err != nil {
+		log.Printf("error '%v' while writing message response", err.Error())
+	}
 }
