@@ -3,19 +3,19 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dpattmann/furby/auth"
 	"log"
 	"net/http"
 
+	"github.com/dpattmann/furby/auth"
 	"github.com/dpattmann/furby/store"
 )
 
 type StoreHandler struct {
 	store store.Store
-	auth  auth.Authorization
+	auth  auth.Authorizer
 }
 
-func NewStoreHandler(store store.Store, auth auth.Authorization) StoreHandler {
+func NewStoreHandler(store store.Store, auth auth.Authorizer) StoreHandler {
 	return StoreHandler{
 		store: store,
 		auth:  auth,
@@ -46,8 +46,12 @@ func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	return
 }
 
-func Serve(tokenEndpointHandler StoreHandler) error {
+func ServeTls(tokenEndpointHandler StoreHandler, cert, key string) error {
 	fmt.Println("Server is running on port *:8080")
+	return http.ListenAndServeTLS(":8080", cert, key, tokenEndpointHandler)
+}
+
+func Serve(tokenEndpointHandler StoreHandler) error {
 	return http.ListenAndServe(":8080", tokenEndpointHandler)
 }
 

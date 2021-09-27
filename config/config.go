@@ -1,19 +1,37 @@
 package config
 
 import (
-	"github.com/dpattmann/furby/oauth2"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/knadh/koanf"
 )
 
 type Config struct {
-	ClientCredentials oauth2.ClientCredentials `koanf:"clientcredentials" validate:"required"`
+	Auth              Auth              `koanf:"auth" validate:"required"`
+	ClientCredentials ClientCredentials `koanf:"clientcredentials" validate:"required"`
+	Server            Server            `koanf:"server" validate:"required"`
+}
+
+type Auth struct {
+	Type       string   `koanf:"type"`
+	UserAgents []string `koanf:"type" validate:"required_if=Type user-agent"`
+}
+
+type ClientCredentials struct {
+	Id     string   `koanf:"id" validate:"required"`
+	Scopes []string `koanf:"scopes" validate:"required"`
+	Secret string   `koanf:"secret" validate:"required"`
+	Url    string   `koanf:"url" validate:"required,url"`
+}
+
+type Server struct {
+	Cert string `koanf:"cert" validate:"required_if=Tls true"`
+	Key  string `koanf:"key" validate:"required_if=Tls true"`
+	Tls  bool   `koanf:"tls"`
 }
 
 func (c *Config) validate() (err error) {
 	validate := validator.New()
-	err = validate.Struct(c.ClientCredentials)
+	err = validate.Struct(c)
 
 	return
 }

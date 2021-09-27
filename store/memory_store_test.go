@@ -1,4 +1,4 @@
-package memory
+package store
 
 import (
 	oauth22 "github.com/dpattmann/furby/oauth2"

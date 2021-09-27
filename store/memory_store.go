@@ -1,4 +1,4 @@
-package memory
+package store
 
 import (
 	"context"
@@ -13,19 +13,19 @@ var (
 	requestGroup singleflight.Group
 )
 
-func NewMemoryStore(c *clientcredentials.Config) *Store {
-	return &Store{
+func NewMemoryStore(c *clientcredentials.Config) *MemoryStore {
+	return &MemoryStore{
 		client: c,
 	}
 }
 
-type Store struct {
+type MemoryStore struct {
 	mu     sync.RWMutex
 	token  *oauth2.Token
 	client *clientcredentials.Config
 }
 
-func (s *Store) GetToken() (*oauth2.Token, error) {
+func (s *MemoryStore) GetToken() (*oauth2.Token, error) {
 	if s.token.Valid() {
 		return s.token, nil
 	}
@@ -41,7 +41,7 @@ func (s *Store) GetToken() (*oauth2.Token, error) {
 	return token.(*oauth2.Token), err
 }
 
-func (s *Store) updateToken() (token *oauth2.Token, err error) {
+func (s *MemoryStore) updateToken() (token *oauth2.Token, err error) {
 	token, err = s.client.Token(context.Background())
 
 	if err != nil {
@@ -53,7 +53,7 @@ func (s *Store) updateToken() (token *oauth2.Token, err error) {
 	return
 }
 
-func (s *Store) setToken(token *oauth2.Token) {
+func (s *MemoryStore) setToken(token *oauth2.Token) {
 	s.mu.Lock()
 	s.token = token
 	s.mu.Unlock()
