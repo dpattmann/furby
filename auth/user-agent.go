@@ -10,8 +10,14 @@ type UserAgentAuthorizer struct {
 }
 
 func NewUserAgentAuthorizer(userAgents []string) *UserAgentAuthorizer {
+	var lowerCaseUserAgens []string
+
+	for _, ua := range userAgents {
+		lowerCaseUserAgens = append(lowerCaseUserAgens, strings.ToLower(ua))
+	}
+
 	return &UserAgentAuthorizer{
-		userAgents: userAgents,
+		userAgents: lowerCaseUserAgens,
 	}
 }
 
@@ -23,7 +29,7 @@ func (u UserAgentAuthorizer) IsAuthorized(r *http.Request) bool {
 	}
 
 	for _, ua := range u.userAgents {
-		if strings.Contains(userAgentHeader, strings.ToLower(ua)) {
+		if strings.Contains(userAgentHeader, ua) {
 			return true
 		}
 	}
