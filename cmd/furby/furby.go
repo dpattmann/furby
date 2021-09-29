@@ -15,7 +15,10 @@ var (
 )
 
 func main() {
-	c, err := config.NewConfig()
+
+	args := config.NewArgs()
+
+	c, err := config.NewConfig(*args.Parse())
 
 	if err != nil {
 		log.Fatalf("Can't read config: %v", err)
@@ -38,13 +41,11 @@ func main() {
 	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
 
 	storeHandler := server.NewStoreHandler(memoryStore, authorizer)
-
 	if c.Server.Tls {
 		if err := server.ServeTls(storeHandler, c.Server.Cert, c.Server.Key); err != nil {
 			log.Fatal("Error running server")
 		}
 	}
-
 	if err := server.Serve(storeHandler); err != nil {
 		log.Fatal("Error running server")
 	}

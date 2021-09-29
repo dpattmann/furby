@@ -13,7 +13,7 @@ type Config struct {
 
 type Auth struct {
 	Type       string   `koanf:"type"`
-	UserAgents []string `koanf:"type" validate:"required_if=Type user-agent"`
+	UserAgents []string `koanf:"user_agents" validate:"required_if=Type user-agent"`
 }
 
 type ClientCredentials struct {
@@ -36,10 +36,10 @@ func (c *Config) validate() (err error) {
 	return
 }
 
-func NewConfig() (config *Config, err error) {
+func NewConfig(args Args) (config *Config, err error) {
 	var k = koanf.New(".")
 
-	builder := NewBuilder(k)
+	builder := NewBuilder(k, args)
 
 	err = builder.loadConfig()
 	if err != nil {
@@ -48,7 +48,6 @@ func NewConfig() (config *Config, err error) {
 
 	config = new(Config)
 	err = builder.unmarshalConfigToStruct(config)
-
 	if err != nil {
 		return
 	}
