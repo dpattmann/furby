@@ -47,11 +47,12 @@ func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 func ServeTls(tokenEndpointHandler StoreHandler, cert, key string) error {
-	fmt.Println("Server is running on port *:8080")
-	return http.ListenAndServeTLS(":8080", cert, key, tokenEndpointHandler)
+	fmt.Println("Server is running on port *:8443")
+	return http.ListenAndServeTLS(":8443", cert, key, tokenEndpointHandler)
 }
 
 func Serve(tokenEndpointHandler StoreHandler) error {
+	fmt.Println("Server is running on port *:8080")
 	return http.ListenAndServe(":8080", tokenEndpointHandler)
 }
 

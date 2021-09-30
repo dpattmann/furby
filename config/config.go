@@ -7,13 +7,13 @@ import (
 
 type Config struct {
 	Auth              Auth              `koanf:"auth" validate:"required"`
-	ClientCredentials ClientCredentials `koanf:"clientcredentials" validate:"required"`
+	ClientCredentials ClientCredentials `koanf:"client_credentials" validate:"required"`
 	Server            Server            `koanf:"server" validate:"required"`
 }
 
 type Auth struct {
 	Type       string   `koanf:"type"`
-	UserAgents []string `koanf:"type" validate:"required_if=Type user-agent"`
+	UserAgents []string `koanf:"user_agents" validate:"required_if=Type user-agent"`
 }
 
 type ClientCredentials struct {
@@ -36,10 +36,10 @@ func (c *Config) validate() (err error) {
 	return
 }
 
-func NewConfig() (config *Config, err error) {
+func NewConfig(path string) (config *Config, err error) {
 	var k = koanf.New(".")
 
-	builder := NewBuilder(k)
+	builder := NewBuilder(k, path)
 
 	err = builder.loadConfig()
 	if err != nil {

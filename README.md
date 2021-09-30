@@ -11,14 +11,9 @@ go build cmd/furby/furby.go
 
 ## Configuration
 
-### Configuration by environment variables
+### Configuration by configuration file
 
-| Name | Description |
-|--- |--- |
-|FURBY_CLIENTCREDENTIALS_ID | OAuth2 Client Id |
-|FURBY_CLIENTCREDENTIALS_SECRET | OAuth2 Client Secret |
-|FURBY_CLIENTCREDENTIALS_URL | Oauth2 Server Token Url |
-|FURBY_CLIENTCREDENTIALS_SCOPES | OAauth2 Token Scopes |
+Configuration can be passed with json or yaml file by command line argument "--path" or "-p". See example configs.
 
 ## Testing
 

@@ -1,18 +1,22 @@
 package config
 
 import (
-	"strings"
-
 	"github.com/knadh/koanf"
-	"github.com/knadh/koanf/providers/env"
+	"github.com/knadh/koanf/parsers/json"
+	"github.com/knadh/koanf/parsers/yaml"
+	"github.com/knadh/koanf/providers/file"
+
+	"errors"
+	"path/filepath"
 )
 
 type Builder struct {
-	k *koanf.Koanf
+	k    *koanf.Koanf
+	path string
 }
 
-func NewBuilder(k *koanf.Koanf) *Builder {
-	return &Builder{k: k}
+func NewBuilder(k *koanf.Koanf, path string) *Builder {
+	return &Builder{k: k, path: path}
 }
 
 func (c *Builder) unmarshalConfigToStruct(config *Config) error {
@@ -20,18 +24,21 @@ func (c *Builder) unmarshalConfigToStruct(config *Config) error {
 }
 
 func (c *Builder) loadConfig() (err error) {
-	return c.loadConfigFromEnvironment()
+	return c.loadConfigFile()
 }
 
-func (c *Builder) loadConfigFromEnvironment() error {
-	return c.k.Load(env.ProviderWithValue("FURBY_", ".", func(s string, v string) (string, interface{}) {
-		key := strings.Replace(
-			strings.ToLower(strings.TrimPrefix(s, "FURBY_")), "_", ".", -1)
+func (c *Builder) loadConfigFile() (err error) {
+	switch {
+	case filepath.Ext(c.path) == ".yaml" || filepath.Ext(c.path) == ".yml":
+		err = c.k.Load(file.Provider(c.path), yaml.Parser())
+	default:
+		err = c.k.Load(file.Provider(c.path), json.Parser())
+	}
 
-		if strings.Contains(v, " ") {
-			return key, strings.Split(v, " ")
-		}
+	if err != nil {
+		err = errors.New("error loading config: " + err.Error())
+		return
+	}
 
-		return key, v
-	}), nil)
+	return nil
 }

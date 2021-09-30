@@ -1,0 +1,21 @@
+---
+
+auth:
+    type: "noop"
+    user-agents:
+        - "my-best-agent"
+        - "firefox 3005"
+        - "Chrome 500.1"
+
+client_credentials:
+    id: "111abc"
+    scopes:
+        - "scope1"
+        - "scope2"
+    secret: "i_am_totally_confident"
+    url: "https://somedomain.com/oauth2/token"
+
+server:
+    cert: ""
+    key: ""
+    tls: "false"
