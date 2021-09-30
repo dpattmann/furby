@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	flag "github.com/spf13/pflag"
+
 	"github.com/dpattmann/furby/auth"
 	"github.com/dpattmann/furby/config"
 	"github.com/dpattmann/furby/oauth2"
@@ -15,7 +17,15 @@ var (
 )
 
 func main() {
-	c, err := config.NewConfig()
+	path := flag.StringP("path", "p", "./furby_config.json", "parameter file")
+	flag.Parse()
+
+	if flag.NFlag() == 0 {
+		flag.PrintDefaults()
+		log.Fatal("Please pass parameter(s)")
+	}
+
+	c, err := config.NewConfig(*path)
 
 	if err != nil {
 		log.Fatalf("Can't read config: %v", err)
