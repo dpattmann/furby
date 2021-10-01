@@ -1,15 +1,14 @@
 package main
 
 import (
-	"log"
+	"github.com/dpattmann/furby/internal/auth"
+	"github.com/dpattmann/furby/internal/config"
+	"github.com/dpattmann/furby/internal/oauth2"
+	"github.com/dpattmann/furby/internal/server"
+	"github.com/dpattmann/furby/internal/store"
 
 	flag "github.com/spf13/pflag"
-
-	"github.com/dpattmann/furby/auth"
-	"github.com/dpattmann/furby/config"
-	"github.com/dpattmann/furby/oauth2"
-	"github.com/dpattmann/furby/server"
-	"github.com/dpattmann/furby/store"
+	"log"
 )
 
 var (

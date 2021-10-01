@@ -1,7 +1,7 @@
 package store
 
 import (
-	oauth22 "github.com/dpattmann/furby/oauth2"
+	oauth22 "github.com/dpattmann/furby/internal/oauth2"
 	"testing"
 	"time"
 

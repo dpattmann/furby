@@ -3,12 +3,12 @@ package server
 import (
 	"encoding/json"
 	"errors"
+	"github.com/dpattmann/furby/internal/mocks"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/dpattmann/furby/mocks"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 )
@@ -17,7 +17,7 @@ var (
 	mockToken = oauth2.Token{AccessToken: "foo", RefreshToken: "bar"}
 )
 
-func setupMock(storeToken *oauth2.Token, storeError error, authReturn bool) (mockStore *mocks.Store, mockAuth *mocks.Authorization ){
+func setupMock(storeToken *oauth2.Token, storeError error, authReturn bool) (mockStore *mocks.Store, mockAuth *mocks.Authorization) {
 	// New mock controller
 	mockStore = &mocks.Store{}
 	mockStore.On("GetToken").Return(storeToken, storeError)
