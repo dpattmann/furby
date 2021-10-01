@@ -86,7 +86,12 @@ func createTempConfig(content string) {
 		log.Fatal(err)
 	}
 
-	defer f.Close()
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+			log.Println("couldn't close test temp file")
+		}
+	}(f)
 
 	_, err2 := f.WriteString(content)
 

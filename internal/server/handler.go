@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dpattmann/furby/auth"
-	"github.com/dpattmann/furby/store"
+	"github.com/dpattmann/furby/internal/auth"
+	"github.com/dpattmann/furby/internal/store"
 )
 
 type StoreHandler struct {

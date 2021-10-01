@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	furbyOauth2 "github.com/dpattmann/furby/oauth2"
+	furbyOauth2 "github.com/dpattmann/furby/internal/oauth2"
 
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"

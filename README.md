@@ -6,7 +6,7 @@ infrastructure to move the OAuth2.0 Token management out of your services.
 ## Build
 
 ```bash
-go build cmd/furby/furby.go
+go build internal/cmd/furby/furby.go
 ```
 
 ## Configuration
