@@ -6,7 +6,7 @@ infrastructure to move the OAuth2.0 Token management out of your services.
 ## Build
 
 ```bash
-go build internal/cmd/furby/furby.go
+go build cmd/furby/furby.go
 ```
 
 ## Configuration
@@ -18,7 +18,8 @@ Configuration can be passed with json or yaml file by command line argument "--p
 ## Testing
 
 ```bash
-go test ./...
+go test -v ./...
+go test -v ./... -bench=.
 ```
 ### Generate mocks
 

@@ -5,16 +5,14 @@ import (
 	"testing"
 	"time"
 
-	furbyOauth2 "github.com/dpattmann/furby/internal/oauth2"
-
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"
 )
 
 var (
-	validMockClientConfig   = furbyOauth2.NewClientCredentialsConfig("ClientIdValue", "ClientSecretValue", "http://localhost:8080", []string{})
-	invalidMockClientConfig = furbyOauth2.NewClientCredentialsConfig("ClientIdValue", "ClientSecretValue", "http://localhost:8081", []string{})
+	validMockClientConfig   = NewClientCredentialsConfig("ClientIdValue", "ClientSecretValue", "http://localhost:8080", []string{})
+	invalidMockClientConfig = NewClientCredentialsConfig("ClientIdValue", "ClientSecretValue", "http://localhost:8081", []string{})
 )
 
 func TestStore_GetToken(t *testing.T) {

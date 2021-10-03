@@ -1,4 +1,4 @@
-package oauth2
+package store
 
 import (
 	"golang.org/x/oauth2"
