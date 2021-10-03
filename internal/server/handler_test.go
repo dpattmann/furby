@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	mockToken = oauth2.Token{AccessToken: "foo", RefreshToken: "bar"}
+	mockToken = oauth2.Token{AccessToken: "foo"}
 )
 
 func setupMock(storeToken *oauth2.Token, storeError error, authReturn bool) (mockStore *mocks.Store, mockAuth *mocks.Authorization) {

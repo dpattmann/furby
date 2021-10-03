@@ -26,7 +26,7 @@ func (f Forwarder) addAccessTokenToRequest(req *http.Request) (err error) {
 		return
 	}
 
-	req.Header.Add("Authorization", "Bearer "+token.AccessToken)
+	req.Header.Add("Authorization", "Bearer: "+token.AccessToken)
 
 	return
 }
