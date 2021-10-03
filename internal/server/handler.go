@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -24,41 +23,32 @@ func NewStoreHandler(store store.Store, auth auth.Authorizer) StoreHandler {
 
 func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
-		writeResponse(w, http.StatusTeapot, "I'm a teapot")
+		http.Error(w, TeapotMessage, http.StatusTeapot)
 		return
 	}
 
 	if !t.auth.IsAuthorized(req) {
-		writeResponse(w, http.StatusUnauthorized, "Not authorized")
+		http.Error(w, Unauthorized, http.StatusUnauthorized)
+		return
 	}
 
 	token, err := t.store.GetToken()
 
 	if err != nil {
-		writeResponse(w, http.StatusInternalServerError, "Error getting token from store")
+		http.Error(w, TokenStoreError, http.StatusInternalServerError)
 		return
 	}
 
 	jsonToken, err := json.Marshal(token)
 
-	writeResponse(w, http.StatusOK, string(jsonToken))
+	t.writeTokenResponse(w, http.StatusOK, jsonToken)
 
 	return
 }
 
-func ServeTls(tokenEndpointHandler StoreHandler, cert, key string) error {
-	fmt.Println("Server is running on port *:8443")
-	return http.ListenAndServeTLS(":8443", cert, key, tokenEndpointHandler)
-}
-
-func Serve(tokenEndpointHandler StoreHandler) error {
-	fmt.Println("Server is running on port *:8080")
-	return http.ListenAndServe(":8080", tokenEndpointHandler)
-}
-
-func writeResponse(writer http.ResponseWriter, status int, message string) {
+func (t StoreHandler) writeTokenResponse(writer http.ResponseWriter, status int, message []byte) {
 	writer.WriteHeader(status)
-	_, err := writer.Write([]byte(message))
+	_, err := writer.Write(message)
 
 	if err != nil {
 		log.Printf("error '%v' while writing message response", err.Error())

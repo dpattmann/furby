@@ -45,15 +45,15 @@ func main() {
 
 	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
 
-	storeHandler := server.NewStoreHandler(memoryStore, authorizer)
+	forwarder := server.NewForwarder(memoryStore, authorizer)
 
 	if c.Server.Tls {
-		if err := server.ServeTls(storeHandler, c.Server.Cert, c.Server.Key); err != nil {
+		if err := server.ServeTls(forwarder, c.Server.Cert, c.Server.Key); err != nil {
 			log.Fatal("Error running server")
 		}
 	}
 
-	if err := server.Serve(storeHandler); err != nil {
+	if err := server.Serve(forwarder); err != nil {
 		log.Fatal("Error running server")
 	}
 }
