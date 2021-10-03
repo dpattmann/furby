@@ -34,7 +34,7 @@ func Test_StoreHandler(t *testing.T) {
 		mockStore, mockAuth := setupMock(&mockToken, nil, true)
 
 		// create StoreHandler with mocked store and auth
-		storeHandler := StoreHandler{store: mockStore, auth: mockAuth}
+		storeHandler := NewStoreHandler(mockStore, mockAuth)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -58,7 +58,7 @@ func Test_StoreHandler(t *testing.T) {
 		mockStore, mockAuth := setupMock(nil, errors.New("no token found"), true)
 
 		// create StoreHandler with mocked store and auth
-		storeHandler := StoreHandler{store: mockStore, auth: mockAuth}
+		storeHandler := NewStoreHandler(mockStore, mockAuth)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -77,7 +77,7 @@ func Test_StoreHandler(t *testing.T) {
 		mockStore, mockAuth := setupMock(&mockToken, nil, false)
 
 		// create StoreHandler with mocked store and auth
-		storeHandler := StoreHandler{store: mockStore, auth: mockAuth}
+		storeHandler := NewStoreHandler(mockStore, mockAuth)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -96,7 +96,7 @@ func Test_StoreHandler(t *testing.T) {
 		mockStore, mockAuth := setupMock(nil, nil, true)
 
 		// create StoreHandler with mocked store and auth
-		storeHandler := StoreHandler{store: mockStore, auth: mockAuth}
+		storeHandler := NewStoreHandler(mockStore, mockAuth)
 
 		req := httptest.NewRequest(http.MethodPost, "/", nil)
 		responseRecorder := httptest.NewRecorder()
