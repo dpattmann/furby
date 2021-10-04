@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/dpattmann/furby/internal/mocks"
+	"github.com/dpattmann/furby/mocks"
 
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"

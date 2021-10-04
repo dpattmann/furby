@@ -3,11 +3,12 @@ package server
 import (
 	"encoding/json"
 	"errors"
-	"github.com/dpattmann/furby/internal/mocks"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/dpattmann/furby/mocks"
 
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/oauth2"

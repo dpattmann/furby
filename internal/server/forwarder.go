@@ -1,10 +1,11 @@
 package server
 
 import (
-	"github.com/dpattmann/furby/internal/auth"
-	"github.com/dpattmann/furby/internal/store"
 	"io"
 	"net/http"
+
+	"github.com/dpattmann/furby/internal/auth"
+	"github.com/dpattmann/furby/internal/store"
 )
 
 type Forwarder struct {
