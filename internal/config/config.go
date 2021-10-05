@@ -12,7 +12,7 @@ type Config struct {
 }
 
 type Auth struct {
-	Type       string   `koanf:"type"`
+	Type       string   `koanf:"type" validate:"oneof=noop user-agent"`
 	UserAgents []string `koanf:"user_agents" validate:"required_if=Type user-agent"`
 }
 

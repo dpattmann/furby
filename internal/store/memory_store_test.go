@@ -1,6 +1,7 @@
 package store
 
 import (
+	"github.com/dpattmann/furby/internal/config"
 	"net/http"
 	"testing"
 	"time"
@@ -11,8 +12,8 @@ import (
 )
 
 var (
-	validMockClientConfig   = NewClientCredentialsConfig("ClientIdValue", "ClientSecretValue", "http://localhost:8080", []string{})
-	invalidMockClientConfig = NewClientCredentialsConfig("ClientIdValue", "ClientSecretValue", "http://localhost:8081", []string{})
+	validMockClientConfig   = NewClientCredentialsConfig(config.ClientCredentials{Id: "ClientIdValue", Scopes: nil, Secret: "ClientSecretValue", Url: "http://localhost:8080"})
+	invalidMockClientConfig = NewClientCredentialsConfig(config.ClientCredentials{Id: "ClientIdValue", Scopes: nil, Secret: "ClientSecretValue", Url: "http://localhost:8081"})
 )
 
 func TestStore_GetToken(t *testing.T) {

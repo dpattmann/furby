@@ -24,7 +24,10 @@ const (
     		    "cert": "foo.cert",
     		    "key": "foo.key",
     		    "tls": "true"
-    		}
+    		},
+			"auth": {
+				"type": "noop"
+			}
 		}
 	`
 	configWithInvalidUrl = `
@@ -37,6 +40,9 @@ const (
         		],
         		"secret": "TestClientSecret",
         		"url": "localhost"
+			},
+			"auth": {
+				"type": "noop"
 			}
 		}
 	`
@@ -55,7 +61,10 @@ const (
     		    "cert": "",
     		    "key": "",
     		    "tls": "false"
-    		}
+    		},
+			"auth": {
+				"type": "noop"
+			}
 		}
 	`
 
@@ -74,7 +83,10 @@ const (
     		    "cert": "",
     		    "key": "",
     		    "tls": "true"
-    		}
+    		},
+			"auth": {
+				"type": "noop"
+			}
 		}
 	`
 )
@@ -126,6 +138,9 @@ func TestNewValidConfig(t *testing.T) {
 				Cert: "foo.cert",
 				Key:  "foo.key",
 				Tls:  true,
+			},
+			Auth: Auth{
+				Type: "noop",
 			},
 		}
 

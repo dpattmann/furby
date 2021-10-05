@@ -5,6 +5,7 @@ import (
 	"github.com/dpattmann/furby/internal/config"
 	"github.com/dpattmann/furby/internal/server"
 	"github.com/dpattmann/furby/internal/store"
+	"net/http"
 
 	flag "github.com/spf13/pflag"
 	"log"
@@ -29,12 +30,8 @@ func main() {
 		log.Fatalf("Can't read config: %v", err)
 	}
 
-	clientCredentialsConfig := store.NewClientCredentialsConfig(
-		c.ClientCredentials.Id,
-		c.ClientCredentials.Secret,
-		c.ClientCredentials.Url,
-		c.ClientCredentials.Scopes,
-	)
+	clientCredentialsConfig := store.NewClientCredentialsConfig(c.ClientCredentials)
+	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
 
 	switch c.Auth.Type {
 	case "user-agent":
@@ -43,17 +40,15 @@ func main() {
 		authorizer = auth.NewNoOpAuthorizer()
 	}
 
-	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
-
-	storeHandler := server.NewStoreHandler(memoryStore, authorizer)
+	handler := server.NewHandler(memoryStore, authorizer)
 
 	if c.Server.Tls {
-		if err := server.ServeTls(storeHandler, c.Server.Cert, c.Server.Key); err != nil {
+		if err := http.ListenAndServeTLS(":8443", c.Server.Cert, c.Server.Key, handler); err != nil {
 			log.Fatal("Error running server")
 		}
 	}
 
-	if err := server.Serve(storeHandler); err != nil {
+	if err := http.ListenAndServe(":8443", handler); err != nil {
 		log.Fatal("Error running server")
 	}
 }

@@ -9,19 +9,19 @@ import (
 	"github.com/dpattmann/furby/internal/store"
 )
 
-type StoreHandler struct {
+type Handler struct {
 	store store.Store
 	auth  auth.Authorizer
 }
 
-func NewStoreHandler(store store.Store, auth auth.Authorizer) StoreHandler {
-	return StoreHandler{
+func NewHandler(store store.Store, auth auth.Authorizer) Handler {
+	return Handler{
 		store: store,
 		auth:  auth,
 	}
 }
 
-func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (t Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, TeapotMessage, http.StatusTeapot)
 		return
@@ -46,7 +46,7 @@ func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	return
 }
 
-func (t StoreHandler) writeTokenResponse(writer http.ResponseWriter, status int, message []byte) {
+func (t Handler) writeTokenResponse(writer http.ResponseWriter, status int, message []byte) {
 	writer.WriteHeader(status)
 	_, err := writer.Write(message)
 
