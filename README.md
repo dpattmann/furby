@@ -26,3 +26,17 @@ go test -v ./... -bench=.
 ```bash
 mockery --all
 ```
+
+## Development environment
+
+### active development
+Use it in case you need some token creating software as docker compose environment but without furby in it.
+```bash
+docker-compose up -d hydra
+```
+
+### passive development
+Use it in case you need furby and some token creating software as docker compose environment
+```bash
+docker-compose up --build
+```
