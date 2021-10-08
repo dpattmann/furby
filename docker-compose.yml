@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+
+  hydra:
+    depends_on:
+      - hydra-migrate
+      - hydra-postgresd
+    image: oryd/hydra:v1.10.6
+    environment:
+      DSN: postgres://hydra:secret@hydra-postgresd:5432/hydra?sslmode=disable
+      SECRETS_SYSTEM: hydra-secret-system
+    ports:
+      - 4444:4444
+      - 4445:4445
+    command: serve all --dangerous-force-http
+    restart: on-failure
+    logging:
+      driver: none
+
+  hydra-migrate:
+    depends_on:
+      - hydra-postgresd
+    image: oryd/hydra:v1.10.6
+    environment:
+      - DSN=postgres://hydra:secret@hydra-postgresd:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
+    command:
+      migrate sql -e --yes
+    restart: on-failure
+    logging:
+      driver: none
+
+  hydra-postgresd:
+    image: postgres:12.4
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=hydra
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=hydra
+    logging:
+      driver: none
+
+  furby:
+    depends_on:
+      - hydra
+    build:
+      context: .
+    ports:
+      - "8443:8443"
