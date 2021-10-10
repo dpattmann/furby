@@ -3,6 +3,7 @@ package store
 import (
 	"github.com/dpattmann/furby/internal/config"
 	"net/http"
+	"sync"
 	"testing"
 	"time"
 
@@ -14,6 +15,7 @@ import (
 var (
 	validMockClientConfig   = NewClientCredentialsConfig(config.ClientCredentials{Id: "ClientIdValue", Scopes: nil, Secret: "ClientSecretValue", Url: "http://localhost:8080"})
 	invalidMockClientConfig = NewClientCredentialsConfig(config.ClientCredentials{Id: "ClientIdValue", Scopes: nil, Secret: "ClientSecretValue", Url: "http://localhost:8081"})
+	wg                      sync.WaitGroup
 )
 
 func TestStore_GetToken(t *testing.T) {
@@ -30,8 +32,8 @@ func TestStore_GetToken(t *testing.T) {
 
 	httpmock.RegisterResponder("POST", "http://localhost:8081", httpmock.NewStringResponder(400, "Invalid Token Request"))
 
-	validTokenStore := NewMemoryStore(validMockClientConfig)
-	invalidTokenStore := NewMemoryStore(invalidMockClientConfig)
+	validTokenStore := NewMemoryStore(validMockClientConfig, &wg)
+	invalidTokenStore := NewMemoryStore(invalidMockClientConfig, &wg)
 
 	wantedToken := &oauth2.Token{
 		AccessToken: "AccessTokenValue",
@@ -85,7 +87,7 @@ func benchmarkGetTokenWithOneSecondHttpDelay(b *testing.B) {
 		})
 	})
 
-	tokenStore := NewMemoryStore(validMockClientConfig)
+	tokenStore := NewMemoryStore(validMockClientConfig, &wg)
 
 	for i := 0; i < b.N; i++ {
 		_, _ = tokenStore.GetToken()

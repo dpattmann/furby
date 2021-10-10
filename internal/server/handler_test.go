@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 
 	"github.com/dpattmann/furby/mocks"
@@ -16,6 +17,7 @@ import (
 
 var (
 	mockToken = oauth2.Token{AccessToken: "foo"}
+	wg        sync.WaitGroup
 )
 
 func setupMock(storeToken *oauth2.Token, storeError error, authReturn bool) (mockStore *mocks.Store, mockAuth *mocks.Authorization) {
@@ -35,7 +37,7 @@ func Test_StoreHandler(t *testing.T) {
 		mockStore, mockAuth := setupMock(&mockToken, nil, true)
 
 		// create Handler with mocked store and auth
-		storeHandler := NewHandler(mockStore, mockAuth)
+		storeHandler := NewHandler(mockStore, mockAuth, &wg)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -59,7 +61,7 @@ func Test_StoreHandler(t *testing.T) {
 		mockStore, mockAuth := setupMock(nil, errors.New("no token found"), true)
 
 		// create Handler with mocked store and auth
-		storeHandler := NewHandler(mockStore, mockAuth)
+		storeHandler := NewHandler(mockStore, mockAuth, &wg)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -78,7 +80,7 @@ func Test_StoreHandler(t *testing.T) {
 		mockStore, mockAuth := setupMock(&mockToken, nil, false)
 
 		// create Handler with mocked store and auth
-		storeHandler := NewHandler(mockStore, mockAuth)
+		storeHandler := NewHandler(mockStore, mockAuth, &wg)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -97,7 +99,7 @@ func Test_StoreHandler(t *testing.T) {
 		mockStore, mockAuth := setupMock(nil, nil, true)
 
 		// create Handler with mocked store and auth
-		storeHandler := NewHandler(mockStore, mockAuth)
+		storeHandler := NewHandler(mockStore, mockAuth, &wg)
 
 		req := httptest.NewRequest(http.MethodPost, "/", nil)
 		responseRecorder := httptest.NewRecorder()

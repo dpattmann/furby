@@ -1,23 +1,26 @@
 package server
 
 import (
+	"github.com/dpattmann/furby/internal/auth"
+	"github.com/dpattmann/furby/internal/store"
+
 	"encoding/json"
 	"log"
 	"net/http"
-
-	"github.com/dpattmann/furby/internal/auth"
-	"github.com/dpattmann/furby/internal/store"
+	"sync"
 )
 
 type Handler struct {
-	store store.Store
-	auth  auth.Authorizer
+	store     store.Store
+	auth      auth.Authorizer
+	waitGroup *sync.WaitGroup
 }
 
-func NewHandler(store store.Store, auth auth.Authorizer) Handler {
+func NewHandler(store store.Store, auth auth.Authorizer, wg *sync.WaitGroup) Handler {
 	return Handler{
-		store: store,
-		auth:  auth,
+		store:     store,
+		auth:      auth,
+		waitGroup: wg,
 	}
 }
 
@@ -42,6 +45,8 @@ func (t Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	jsonToken, err := json.Marshal(token)
 
 	t.writeTokenResponse(w, http.StatusOK, jsonToken)
+
+	t.waitGroup.Wait()
 
 	return
 }

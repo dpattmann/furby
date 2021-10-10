@@ -6,6 +6,7 @@ import (
 	"github.com/dpattmann/furby/internal/server"
 	"github.com/dpattmann/furby/internal/store"
 	"net/http"
+	"sync"
 
 	flag "github.com/spf13/pflag"
 	"log"
@@ -31,7 +32,10 @@ func main() {
 	}
 
 	clientCredentialsConfig := store.NewClientCredentialsConfig(c.ClientCredentials)
-	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
+
+	var wg sync.WaitGroup
+
+	memoryStore := store.NewMemoryStore(clientCredentialsConfig, &wg)
 
 	switch c.Auth.Type {
 	case "user-agent":
@@ -40,7 +44,7 @@ func main() {
 		authorizer = auth.NewNoOpAuthorizer()
 	}
 
-	handler := server.NewHandler(memoryStore, authorizer)
+	handler := server.NewHandler(memoryStore, authorizer, &wg)
 
 	if c.Server.Tls {
 		if err := http.ListenAndServeTLS(":8443", c.Server.Cert, c.Server.Key, handler); err != nil {
@@ -48,7 +52,7 @@ func main() {
 		}
 	}
 
-	if err := http.ListenAndServe(":8443", handler); err != nil {
+	if err := http.ListenAndServe(":8080", handler); err != nil {
 		log.Fatal("Error running server")
 	}
 }
