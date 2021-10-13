@@ -12,6 +12,11 @@ type Store struct {
 	mock.Mock
 }
 
+// BackgroundUpdate provides a mock function with given fields: interval
+func (_m *Store) BackgroundUpdate(interval int) {
+	_m.Called(interval)
+}
+
 // GetToken provides a mock function with given fields:
 func (_m *Store) GetToken() (*oauth2.Token, error) {
 	ret := _m.Called()

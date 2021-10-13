@@ -5,10 +5,9 @@ import (
 	"github.com/dpattmann/furby/internal/config"
 	"github.com/dpattmann/furby/internal/server"
 	"github.com/dpattmann/furby/internal/store"
-	"net/http"
-
 	flag "github.com/spf13/pflag"
 	"log"
+	"net/http"
 )
 
 var (
@@ -32,6 +31,8 @@ func main() {
 
 	clientCredentialsConfig := store.NewClientCredentialsConfig(c.ClientCredentials)
 	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
+
+	go memoryStore.BackgroundUpdate(300)
 
 	switch c.Auth.Type {
 	case "user-agent":

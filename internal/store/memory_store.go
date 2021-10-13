@@ -2,7 +2,9 @@ package store
 
 import (
 	"context"
+	"fmt"
 	"sync"
+	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
@@ -23,6 +25,19 @@ type MemoryStore struct {
 	mu     sync.RWMutex
 	token  *oauth2.Token
 	client *clientcredentials.Config
+}
+
+func (s *MemoryStore) BackgroundUpdate(interval int) {
+	for {
+		select {
+		case <-time.After(time.Second * time.Duration(interval)):
+			fmt.Println("Updating token")
+			if _, err := s.updateToken(); err != nil {
+				fmt.Printf("Error updating token: %v", err)
+			}
+			fmt.Println("Updated token successfully")
+		}
+	}
 }
 
 func (s *MemoryStore) GetToken() (*oauth2.Token, error) {

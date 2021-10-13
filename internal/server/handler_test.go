@@ -18,12 +18,12 @@ var (
 	mockToken = oauth2.Token{AccessToken: "foo"}
 )
 
-func setupMock(storeToken *oauth2.Token, storeError error, authReturn bool) (mockStore *mocks.Store, mockAuth *mocks.Authorization) {
+func setupMock(storeToken *oauth2.Token, storeError error, authReturn bool) (mockStore *mocks.Store, mockAuth *mocks.Authorizer) {
 	// New mock controller
-	mockStore = &mocks.Store{}
+	mockStore = new(mocks.Store)
 	mockStore.On("GetToken").Return(storeToken, storeError)
 
-	mockAuth = &mocks.Authorization{}
+	mockAuth = new(mocks.Authorizer)
 	mockAuth.On("IsAuthorized", httptest.NewRequest(http.MethodGet, "/", nil)).Return(authReturn)
 
 	return
