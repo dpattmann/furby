@@ -29,14 +29,13 @@ type MemoryStore struct {
 
 func (s *MemoryStore) BackgroundUpdate(interval int) {
 	for {
-		select {
-		case <-time.After(time.Second * time.Duration(interval)):
-			fmt.Println("Updating token")
-			if _, err := s.updateToken(); err != nil {
-				fmt.Printf("Error updating token: %v", err)
-			}
-			fmt.Println("Updated token successfully")
+		<-time.After(time.Second * time.Duration(interval))
+
+		fmt.Println("Updating token")
+		if _, err := s.updateToken(); err != nil {
+			fmt.Printf("Error updating token: %v", err)
 		}
+		fmt.Println("Updated token successfully")
 	}
 }
 
