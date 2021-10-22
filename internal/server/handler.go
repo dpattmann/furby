@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/dpattmann/furby/internal/auth"
@@ -41,16 +40,8 @@ func (t Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	jsonToken, err := json.Marshal(token)
 
-	t.writeTokenResponse(w, http.StatusOK, jsonToken)
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonToken)
 
 	return
-}
-
-func (t Handler) writeTokenResponse(writer http.ResponseWriter, status int, message []byte) {
-	writer.WriteHeader(status)
-	_, err := writer.Write(message)
-
-	if err != nil {
-		log.Printf("error '%v' while writing message response", err.Error())
-	}
 }

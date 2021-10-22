@@ -16,6 +16,9 @@
         "secret": "i_am_totally_confident",
         "url": "https://somedomain.com/oauth2/token"
     },
+    "storage": {
+        "interval": 300
+    },
     "server": {
         "cert": "",
         "key": "",

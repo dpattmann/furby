@@ -20,6 +20,9 @@ const (
         		"secret": "TestClientSecret",
         		"url": "https://localhost"
 			},
+			"store": {
+				"interval": "300"
+			},
     		"server": {
     		    "cert": "foo.cert",
     		    "key": "foo.key",
@@ -40,6 +43,9 @@ const (
         		],
         		"secret": "TestClientSecret",
         		"url": "localhost"
+			},
+			"store": {
+				"interval": "300"
 			},
 			"auth": {
 				"type": "noop"
@@ -62,6 +68,9 @@ const (
     		    "key": "",
     		    "tls": "false"
     		},
+			"store": {
+				"interval": "300"
+			},
 			"auth": {
 				"type": "noop"
 			}
@@ -84,6 +93,9 @@ const (
     		    "key": "",
     		    "tls": "true"
     		},
+			"store": {
+				"interval": "300"
+			},
 			"auth": {
 				"type": "noop"
 			}
@@ -91,26 +103,18 @@ const (
 	`
 )
 
-func createTempConfig(content string) {
+func createTempConfig(content string) (err error) {
 	f, err := os.Create("test_temp.json")
 
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-			log.Println("couldn't close test temp file")
-		}
-	}(f)
+	defer f.Close()
 
-	_, err2 := f.WriteString(content)
+	_, err = f.WriteString(content)
 
-	if err2 != nil {
-		log.Fatal(err2)
-	}
-
+	return
 }
 
 func removeTempConfig() {
@@ -123,7 +127,8 @@ func removeTempConfig() {
 
 func TestNewValidConfig(t *testing.T) {
 	t.Run("Create valid config from environment", func(t *testing.T) {
-		createTempConfig(validConfig)
+		err := createTempConfig(validConfig)
+		assert.NoError(t, err)
 
 		got, err := NewConfig("./test_temp.json")
 
@@ -138,6 +143,9 @@ func TestNewValidConfig(t *testing.T) {
 				Cert: "foo.cert",
 				Key:  "foo.key",
 				Tls:  true,
+			},
+			Store: Store{
+				Interval: 300,
 			},
 			Auth: Auth{
 				Type: "noop",
@@ -176,7 +184,8 @@ func TestNewFailureConfig(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.testDescription, func(t *testing.T) {
-			createTempConfig(tt.testCase)
+			err := createTempConfig(tt.testCase)
+			assert.NoError(t, err)
 			if _, err := NewConfig("./test_temp.json"); (err != nil) != tt.wantErr {
 				t.Errorf("Expected %v, wantErr %v", err, tt.wantErr)
 			}

@@ -9,6 +9,11 @@ type Config struct {
 	Auth              Auth              `koanf:"auth" validate:"required"`
 	ClientCredentials ClientCredentials `koanf:"client_credentials" validate:"required"`
 	Server            Server            `koanf:"server" validate:"required"`
+	Store             Store             `koanf:"store" validate:"required"`
+}
+
+type Store struct {
+	Interval int `koanf:"interval" validate:"required"`
 }
 
 type Auth struct {

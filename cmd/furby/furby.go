@@ -32,7 +32,7 @@ func main() {
 	clientCredentialsConfig := store.NewClientCredentialsConfig(c.ClientCredentials)
 	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
 
-	go memoryStore.BackgroundUpdate(300)
+	go memoryStore.BackgroundUpdate(c.Store.Interval)
 
 	switch c.Auth.Type {
 	case "user-agent":
