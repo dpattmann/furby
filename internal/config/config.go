@@ -6,10 +6,10 @@ import (
 )
 
 type Config struct {
-	Auth              Auth              `koanf:"auth" validate:"required"`
-	ClientCredentials ClientCredentials `koanf:"client_credentials" validate:"required"`
-	Server            Server            `koanf:"server" validate:"required"`
-	Store             Store             `koanf:"store" validate:"required"`
+	Auth        Auth        `koanf:"auth" validate:"required"`
+	Credentials Credentials `koanf:"credentials" validate:"required"`
+	Server      Server      `koanf:"server" validate:"required"`
+	Store       Store       `koanf:"store" validate:"required"`
 }
 
 type Store struct {
@@ -23,7 +23,7 @@ type Auth struct {
 	HeaderName   string   `koanf:"header_name" validate:"required_if=Type header"`
 }
 
-type ClientCredentials struct {
+type Credentials struct {
 	Id     string   `koanf:"id" validate:"required"`
 	Scopes []string `koanf:"scopes" validate:"required"`
 	Secret string   `koanf:"secret" validate:"required"`
@@ -31,6 +31,7 @@ type ClientCredentials struct {
 }
 
 type Server struct {
+	Addr string `koanf:"addr" validate:"required"`
 	Cert string `koanf:"cert" validate:"required_if=Tls true"`
 	Key  string `koanf:"key" validate:"required_if=Tls true"`
 	Tls  bool   `koanf:"tls"`

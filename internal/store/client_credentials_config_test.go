@@ -9,7 +9,7 @@ import (
 
 func TestNewClientCredentialsConfig(t *testing.T) {
 	type args struct {
-		config config.ClientCredentials
+		config config.Credentials
 	}
 	tests := []struct {
 		name string
@@ -19,7 +19,7 @@ func TestNewClientCredentialsConfig(t *testing.T) {
 		{
 			name: "Create Client Credentials Config",
 			args: args{
-				config: config.ClientCredentials{
+				config: config.Credentials{
 					Id:     "ClientIdString",
 					Scopes: []string{"scopeA"},
 					Secret: "ClientSecretString",
@@ -35,7 +35,7 @@ func TestNewClientCredentialsConfig(t *testing.T) {
 		{
 			name: "Create Client Credentials Config with two scopes",
 			args: args{
-				config: config.ClientCredentials{
+				config: config.Credentials{
 					Id:     "ClientIdString",
 					Scopes: []string{"scopeA", "scopeB"},
 					Secret: "ClientSecretString",

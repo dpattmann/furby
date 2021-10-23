@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	validMockClientConfig   = NewClientCredentialsConfig(config.ClientCredentials{Id: "ClientIdValue", Scopes: nil, Secret: "ClientSecretValue", Url: "http://localhost:8080"})
-	invalidMockClientConfig = NewClientCredentialsConfig(config.ClientCredentials{Id: "ClientIdValue", Scopes: nil, Secret: "ClientSecretValue", Url: "http://localhost:8081"})
+	validMockClientConfig   = NewClientCredentialsConfig(config.Credentials{Id: "ClientIdValue", Scopes: nil, Secret: "ClientSecretValue", Url: "http://localhost:8080"})
+	invalidMockClientConfig = NewClientCredentialsConfig(config.Credentials{Id: "ClientIdValue", Scopes: nil, Secret: "ClientSecretValue", Url: "http://localhost:8081"})
 )
 
 func TestStore_GetToken(t *testing.T) {

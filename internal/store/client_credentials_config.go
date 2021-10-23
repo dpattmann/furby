@@ -6,7 +6,7 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
-func NewClientCredentialsConfig(config config.ClientCredentials) *clientcredentials.Config {
+func NewClientCredentialsConfig(config config.Credentials) *clientcredentials.Config {
 	return &clientcredentials.Config{
 		ClientID:     config.Id,
 		ClientSecret: config.Secret,

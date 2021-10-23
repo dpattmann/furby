@@ -1,13 +1,14 @@
 package config
 
 import (
+	"errors"
+	"path/filepath"
+
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/parsers/yaml"
+	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/file"
-
-	"errors"
-	"path/filepath"
 )
 
 type Builder struct {
@@ -24,21 +25,30 @@ func (c *Builder) unmarshalConfigToStruct(config *Config) error {
 }
 
 func (c *Builder) loadConfig() (err error) {
-	return c.loadConfigFile()
-}
-
-func (c *Builder) loadConfigFile() (err error) {
-	switch {
-	case filepath.Ext(c.path) == ".yaml" || filepath.Ext(c.path) == ".yml":
-		err = c.k.Load(file.Provider(c.path), yaml.Parser())
-	default:
-		err = c.k.Load(file.Provider(c.path), json.Parser())
-	}
-
+	err = c.loadConfigMap()
 	if err != nil {
-		err = errors.New("error loading config: " + err.Error())
 		return
 	}
 
-	return
+	return c.loadConfigFile()
+}
+
+// LoadConfigMap is used to set default values
+func (c *Builder) loadConfigMap() error {
+	return c.k.Load(confmap.Provider(map[string]interface{}{
+		"server.port":    ":8443",
+		"server.tls":     false,
+		"store.interval": 300,
+	}, "."), nil)
+}
+
+func (c *Builder) loadConfigFile() error {
+	switch {
+	case filepath.Ext(c.path) == ".yaml" || filepath.Ext(c.path) == ".yml":
+		return c.k.Load(file.Provider(c.path), yaml.Parser())
+	case filepath.Ext(c.path) == ".json":
+		return c.k.Load(file.Provider(c.path), json.Parser())
+	}
+
+	return errors.New("error: unsupported file type")
 }

@@ -3,7 +3,7 @@
         "type": "noop",
         "user-agents": []
     },
-    "client_credentials" : {
+    "credentials" : {
         "id": "ClientId",
         "scopes": [],
         "secret": "ClientSecret",
@@ -15,6 +15,6 @@
     "server": {
         "cert": "",
         "key": "",
-        "tls": "false"
+        "tls": false
     }
 }

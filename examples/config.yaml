@@ -4,7 +4,7 @@ auth:
     type: "noop"
     user-agents: []
 
-client_credentials:
+credentials:
     id: "ClientId"
     scopes: []
     secret: "ClientSecret"
@@ -16,4 +16,4 @@ store:
 server:
     cert: ""
     key: ""
-    tls: "false"
+    tls: false

@@ -1,7 +1,7 @@
 auth:
   type: 'noop'
 
-client_credentials:
+credentials:
   id: "integration-tests"
   secret: "secret"
   scopes:

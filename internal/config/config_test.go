@@ -11,7 +11,7 @@ import (
 const (
 	validConfig = `
 		{    
-			"client_credentials" : {
+			"credentials" : {
         		"id": "TestClientId",
         		"scopes": [
         		    "scopeA",
@@ -24,6 +24,7 @@ const (
 				"interval": "300"
 			},
     		"server": {
+				"addr": ":8443",
     		    "cert": "foo.cert",
     		    "key": "foo.key",
     		    "tls": "true"
@@ -35,7 +36,7 @@ const (
 	`
 	configWithInvalidUrl = `
 		{    
-			"client_credentials" : {
+			"credentials" : {
         		"id": "TestClientId",
         		"scopes": [
         		    "scopeA",
@@ -54,7 +55,7 @@ const (
 	`
 	configWithDisabledTls = `
 		{    
-			"client_credentials" : {
+			"credentials" : {
         		"id": "TestClientId",
         		"scopes": [
         		    "scopeA",
@@ -64,6 +65,7 @@ const (
         		"url": "https://localhost"
 			},
     		"server": {
+				"addr": ":8443",
     		    "cert": "",
     		    "key": "",
     		    "tls": "false"
@@ -79,7 +81,7 @@ const (
 
 	configWithTlsButWithoutCert = `
 		{    
-			"client_credentials" : {
+			"credentials" : {
         		"id": "TestClientId",
         		"scopes": [
         		    "scopeA",
@@ -89,6 +91,7 @@ const (
         		"url": "https://localhost"
 			},
     		"server": {
+				"addr": ":8443",
     		    "cert": "",
     		    "key": "",
     		    "tls": "true"
@@ -133,13 +136,14 @@ func TestNewValidConfig(t *testing.T) {
 		got, err := NewConfig("./test_temp.json")
 
 		want := &Config{
-			ClientCredentials: ClientCredentials{
+			Credentials: Credentials{
 				Id:     "TestClientId",
 				Scopes: []string{"scopeA", "scopeB"},
 				Secret: "TestClientSecret",
 				Url:    "https://localhost",
 			},
 			Server: Server{
+				Addr: ":8443",
 				Cert: "foo.cert",
 				Key:  "foo.key",
 				Tls:  true,

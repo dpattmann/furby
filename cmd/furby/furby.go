@@ -28,7 +28,7 @@ func main() {
 		log.Fatalf("Can't read config: %v", err)
 	}
 
-	clientCredentialsConfig := store.NewClientCredentialsConfig(c.ClientCredentials)
+	clientCredentialsConfig := store.NewClientCredentialsConfig(c.Credentials)
 	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
 
 	go memoryStore.BackgroundUpdate(c.Store.Interval)
@@ -48,12 +48,12 @@ func main() {
 	http.Handle("/", tokenHandler)
 
 	if c.Server.Tls {
-		if err := http.ListenAndServeTLS(":8443", c.Server.Cert, c.Server.Key, nil); err != nil {
+		if err := http.ListenAndServeTLS(c.Server.Addr, c.Server.Cert, c.Server.Key, nil); err != nil {
 			log.Fatal("Error running server")
 		}
 	}
 
-	if err := http.ListenAndServe(":8443", nil); err != nil {
+	if err := http.ListenAndServe(c.Server.Addr, nil); err != nil {
 		log.Fatal("Error running server")
 	}
 }
