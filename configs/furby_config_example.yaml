@@ -19,3 +19,4 @@ server:
     cert: ""
     key: ""
     tls: "false"
+    port: "8888"

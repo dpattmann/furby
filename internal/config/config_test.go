@@ -23,7 +23,27 @@ const (
     		"server": {
     		    "cert": "foo.cert",
     		    "key": "foo.key",
-    		    "tls": "true"
+    		    "tls": "true",
+				"port": "8888"
+    		},
+			"auth": {
+				"type": "noop"
+			}
+		}
+	`
+	validConfigWithoutPort = `
+		{    
+			"client_credentials" : {
+        		"id": "TestClientId",
+        		"scopes": [
+        		    "scopeA",
+        		    "scopeB"
+        		],
+        		"secret": "TestClientSecret",
+        		"url": "https://localhost"
+			},
+    		"server": {
+    		    "tls": "false"
     		},
 			"auth": {
 				"type": "noop"
@@ -138,6 +158,38 @@ func TestNewValidConfig(t *testing.T) {
 				Cert: "foo.cert",
 				Key:  "foo.key",
 				Tls:  true,
+				Port: 8888,
+			},
+			Auth: Auth{
+				Type: "noop",
+			},
+		}
+
+		assert.NoError(t, err)
+		assert.Equal(t, want, got)
+
+		removeTempConfig()
+	})
+}
+
+func TestNewValidConfigWithoutPort(t *testing.T) {
+	t.Run("Create valid config without port from environment", func(t *testing.T) {
+		createTempConfig(validConfigWithoutPort)
+
+		got, err := NewConfig("./test_temp.json")
+
+		want := &Config{
+			ClientCredentials: ClientCredentials{
+				Id:     "TestClientId",
+				Scopes: []string{"scopeA", "scopeB"},
+				Secret: "TestClientSecret",
+				Url:    "https://localhost",
+			},
+			Server: Server{
+				Cert: "",
+				Key:  "",
+				Tls:  false,
+				Port: 8080,
 			},
 			Auth: Auth{
 				Type: "noop",

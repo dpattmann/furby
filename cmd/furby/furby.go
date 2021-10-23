@@ -8,6 +8,7 @@ import (
 	flag "github.com/spf13/pflag"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var (
@@ -44,12 +45,12 @@ func main() {
 	handler := server.NewHandler(memoryStore, authorizer)
 
 	if c.Server.Tls {
-		if err := http.ListenAndServeTLS(":8443", c.Server.Cert, c.Server.Key, handler); err != nil {
+		if err := http.ListenAndServeTLS(":"+strconv.Itoa(c.Server.Port), c.Server.Cert, c.Server.Key, handler); err != nil {
 			log.Fatal("Error running server")
 		}
 	}
 
-	if err := http.ListenAndServe(":8443", handler); err != nil {
+	if err := http.ListenAndServe(":"+strconv.Itoa(c.Server.Port), handler); err != nil {
 		log.Fatal("Error running server")
 	}
 }

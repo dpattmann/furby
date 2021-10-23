@@ -19,6 +19,7 @@
     "server": {
         "cert": "",
         "key": "",
-        "tls": "false"
+        "tls": "false",
+        "port": "8888"
     }
 }

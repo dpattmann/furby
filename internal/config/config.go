@@ -27,6 +27,7 @@ type Server struct {
 	Cert string `koanf:"cert" validate:"required_if=Tls true"`
 	Key  string `koanf:"key" validate:"required_if=Tls true"`
 	Tls  bool   `koanf:"tls"`
+	Port int    `koanf:"port" validate:"gte=1,lte=65535"`
 }
 
 func (c *Config) validate() (err error) {
@@ -51,6 +52,13 @@ func NewConfig(path string) (config *Config, err error) {
 
 	if err != nil {
 		return
+	}
+
+	switch {
+	case config.Server.Port == 0 && config.Server.Tls:
+		config.Server.Port = 8443
+	case config.Server.Port == 0 && !config.Server.Tls:
+		config.Server.Port = 8080
 	}
 
 	err = config.validate()
