@@ -1,13 +1,17 @@
 package main
 
 import (
-	"github.com/dpattmann/furby/internal/auth"
-	"github.com/dpattmann/furby/internal/config"
-	"github.com/dpattmann/furby/internal/server"
-	"github.com/dpattmann/furby/internal/store"
-	flag "github.com/spf13/pflag"
 	"log"
 	"net/http"
+
+	"github.com/dpattmann/furby/internal/auth"
+	"github.com/dpattmann/furby/internal/config"
+	"github.com/dpattmann/furby/internal/handler"
+	"github.com/dpattmann/furby/internal/metrics"
+	"github.com/dpattmann/furby/internal/store"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	flag "github.com/spf13/pflag"
 )
 
 var (
@@ -15,13 +19,8 @@ var (
 )
 
 func main() {
-	path := flag.StringP("path", "p", "./furby_config.json", "parameter file")
+	path := flag.StringP("path", "p", "/etc/furby/config.yaml", "parameter file")
 	flag.Parse()
-
-	if flag.NFlag() == 0 {
-		flag.PrintDefaults()
-		log.Fatal("Please pass parameter(s)")
-	}
 
 	c, err := config.NewConfig(*path)
 
@@ -37,19 +36,24 @@ func main() {
 	switch c.Auth.Type {
 	case "user-agent":
 		authorizer = auth.NewUserAgentAuthorizer(c.Auth.UserAgents)
+	case "header":
+		authorizer = auth.NewHeaderAuthorizer(c.Auth.HeaderName, c.Auth.HeaderValues)
 	default:
 		authorizer = auth.NewNoOpAuthorizer()
 	}
 
-	handler := server.NewHandler(memoryStore, authorizer)
+	tokenHandler := handler.NewTokenHandler(memoryStore, authorizer)
+
+	http.Handle("/metrics", promhttp.HandlerFor(metrics.PrometheusRegister, promhttp.HandlerOpts{}))
+	http.Handle("/", tokenHandler)
 
 	if c.Server.Tls {
-		if err := http.ListenAndServeTLS(":8443", c.Server.Cert, c.Server.Key, handler); err != nil {
+		if err := http.ListenAndServeTLS(":8443", c.Server.Cert, c.Server.Key, nil); err != nil {
 			log.Fatal("Error running server")
 		}
 	}
 
-	if err := http.ListenAndServe(":8443", handler); err != nil {
+	if err := http.ListenAndServe(":8443", nil); err != nil {
 		log.Fatal("Error running server")
 	}
 }

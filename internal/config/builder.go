@@ -40,5 +40,5 @@ func (c *Builder) loadConfigFile() (err error) {
 		return
 	}
 
-	return nil
+	return
 }

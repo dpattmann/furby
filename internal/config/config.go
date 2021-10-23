@@ -17,8 +17,10 @@ type Store struct {
 }
 
 type Auth struct {
-	Type       string   `koanf:"type" validate:"oneof=noop user-agent"`
-	UserAgents []string `koanf:"user_agents" validate:"required_if=Type user-agent"`
+	Type         string   `koanf:"type" validate:"oneof=noop user-agent header"`
+	UserAgents   []string `koanf:"user_agents" validate:"required_if=Type user-agent"`
+	HeaderValues []string `koanf:"header_values" validate:"required_if=Type header"`
+	HeaderName   string   `koanf:"header_name" validate:"required_if=Type header"`
 }
 
 type ClientCredentials struct {

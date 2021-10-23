@@ -2,18 +2,13 @@
 
 auth:
     type: "noop"
-    user-agents:
-        - "my-best-agent"
-        - "firefox 3005"
-        - "Chrome 500.1"
+    user-agents: []
 
 client_credentials:
-    id: "111abc"
-    scopes:
-        - "scope1"
-        - "scope2"
-    secret: "i_am_totally_confident"
-    url: "https://somedomain.com/oauth2/token"
+    id: "ClientId"
+    scopes: []
+    secret: "ClientSecret"
+    url: "https://oauth.server/oauth2/token"
 
 store:
     interval: 300

@@ -1,0 +1,12 @@
+auth:
+  type: 'noop'
+
+client_credentials:
+  id: "integration-tests"
+  secret: "secret"
+  scopes:
+    - "scope1"
+  url: "http://localhost:4444/oauth2/token"
+
+store:
+  interval: 60

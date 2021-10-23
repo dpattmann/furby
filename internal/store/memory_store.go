@@ -6,6 +6,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/dpattmann/furby/internal/metrics"
+
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 	"golang.org/x/sync/singleflight"
@@ -56,6 +58,7 @@ func (s *MemoryStore) GetToken() (*oauth2.Token, error) {
 }
 
 func (s *MemoryStore) updateToken() (token *oauth2.Token, err error) {
+	metrics.BackendRequests.Inc()
 	token, err = s.client.Token(context.Background())
 
 	if err != nil {

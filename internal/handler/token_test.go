@@ -1,4 +1,4 @@
-package server
+package handler
 
 import (
 	"encoding/json"
@@ -34,8 +34,8 @@ func Test_StoreHandler(t *testing.T) {
 		// setup Mock
 		mockStore, mockAuth := setupMock(&mockToken, nil, true)
 
-		// create Handler with mocked store and auth
-		storeHandler := NewHandler(mockStore, mockAuth)
+		// create TokenHandler with mocked store and auth
+		storeHandler := NewTokenHandler(mockStore, mockAuth)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -58,8 +58,8 @@ func Test_StoreHandler(t *testing.T) {
 		// setup Mock
 		mockStore, mockAuth := setupMock(nil, errors.New("no token found"), true)
 
-		// create Handler with mocked store and auth
-		storeHandler := NewHandler(mockStore, mockAuth)
+		// create TokenHandler with mocked store and auth
+		storeHandler := NewTokenHandler(mockStore, mockAuth)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -77,8 +77,8 @@ func Test_StoreHandler(t *testing.T) {
 		// setup Mock
 		mockStore, mockAuth := setupMock(&mockToken, nil, false)
 
-		// create Handler with mocked store and auth
-		storeHandler := NewHandler(mockStore, mockAuth)
+		// create TokenHandler with mocked store and auth
+		storeHandler := NewTokenHandler(mockStore, mockAuth)
 
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		responseRecorder := httptest.NewRecorder()
@@ -96,8 +96,8 @@ func Test_StoreHandler(t *testing.T) {
 		// setup Mock
 		mockStore, mockAuth := setupMock(nil, nil, true)
 
-		// create Handler with mocked store and auth
-		storeHandler := NewHandler(mockStore, mockAuth)
+		// create TokenHandler with mocked store and auth
+		storeHandler := NewTokenHandler(mockStore, mockAuth)
 
 		req := httptest.NewRequest(http.MethodPost, "/", nil)
 		responseRecorder := httptest.NewRecorder()
