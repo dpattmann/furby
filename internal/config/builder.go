@@ -36,7 +36,8 @@ func (c *Builder) loadConfig() (err error) {
 // LoadConfigMap is used to set default values
 func (c *Builder) loadConfigMap() error {
 	return c.k.Load(confmap.Provider(map[string]interface{}{
-		"server.port":    ":8443",
+		"auth.type":      "noop",
+		"server.addr":    ":8443",
 		"server.tls":     false,
 		"store.interval": 300,
 	}, "."), nil)
