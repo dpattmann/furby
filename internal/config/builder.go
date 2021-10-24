@@ -44,10 +44,10 @@ func (c *Builder) loadConfigMap() error {
 }
 
 func (c *Builder) loadConfigFile() error {
-	switch {
-	case filepath.Ext(c.path) == ".yaml" || filepath.Ext(c.path) == ".yml":
+	switch filepath.Ext(c.path) {
+	case ".yaml", ".yml":
 		return c.k.Load(file.Provider(c.path), yaml.Parser())
-	case filepath.Ext(c.path) == ".json":
+	case ".json":
 		return c.k.Load(file.Provider(c.path), json.Parser())
 	}
 
