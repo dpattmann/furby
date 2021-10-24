@@ -15,6 +15,35 @@ go build cmd/furby/furby.go
 
 Configuration can be passed with json or yaml file by command line argument "--path" or "-p". See example configs.
 
+## Config
+
+## Example Config
+
+```yaml
+---
+auth:
+    type: "noop|user-agent|header"
+    user-agents: [] # required if type is user-agent
+    header-name: "" # required if type is header
+    header-value: [] # required if type is header
+
+credentials:
+    id: "ClientId"
+    scopes: []
+    secret: "ClientSecret"
+    url: "https://oauth.server/oauth2/token"
+
+store:
+    interval: 300 # default
+
+server:
+    addr: ":8080" # default
+    cert: ""
+    key: ""
+    tls: false
+
+```
+
 ## Authorizer
 
 | Name | Value | Description | 
@@ -37,14 +66,8 @@ mockery --all
 
 ## Development environment
 
-### active development
+### Active development
 Use it in case you need some token creating software as docker compose environment but without furby in it.
 ```bash
 docker-compose up -d hydra
-```
-
-### passive development
-Use it in case you need furby and some token creating software as docker compose environment
-```bash
-docker-compose up --build
 ```
