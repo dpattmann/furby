@@ -62,6 +62,7 @@ func (s *MemoryStore) updateToken() (token *oauth2.Token, err error) {
 	token, err = s.client.Token(context.Background())
 
 	if err != nil {
+		metrics.BackendRequestsFailed.Inc()
 		return
 	}
 

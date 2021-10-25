@@ -19,6 +19,13 @@ var (
 		},
 	)
 
+	BackendRequestsFailed = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "furby_oauth2_token_requests_failed",
+			Help: "Total number of failed backend requests",
+		},
+	)
+
 	Http500Errors = prometheus.NewCounter(
 		prometheus.CounterOpts{
 			Name: "furby_internal_server_errors",
@@ -36,6 +43,7 @@ var (
 
 func init() {
 	PrometheusRegister.MustRegister(BackendRequests)
+	PrometheusRegister.MustRegister(BackendRequestsFailed)
 	PrometheusRegister.MustRegister(Http500Errors)
 	PrometheusRegister.MustRegister(ReceivedRequests)
 	PrometheusRegister.MustRegister(RequestTime)
