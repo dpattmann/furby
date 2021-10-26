@@ -34,7 +34,7 @@ credentials:
     url: "https://oauth.server/oauth2/token"
 
 store:
-    interval: 300 # default
+    interval: 5 # default
 
 server:
     addr: ":8080" # default

@@ -39,7 +39,7 @@ func (c *Builder) loadConfigMap() error {
 		"auth.type":      "noop",
 		"server.addr":    ":8443",
 		"server.tls":     false,
-		"store.interval": 300,
+		"store.interval": 5,
 	}, "."), nil)
 }
 

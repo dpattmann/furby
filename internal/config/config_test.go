@@ -21,7 +21,7 @@ const (
         		"url": "https://localhost"
 			},
 			"store": {
-				"interval": "300"
+				"interval": "5"
 			},
     		"server": {
 				"addr": ":8443",
@@ -46,7 +46,7 @@ const (
         		"url": "localhost"
 			},
 			"store": {
-				"interval": "300"
+				"interval": "5"
 			},
 			"auth": {
 				"type": "noop"
@@ -71,7 +71,7 @@ const (
     		    "tls": "false"
     		},
 			"store": {
-				"interval": "300"
+				"interval": "5"
 			},
 			"auth": {
 				"type": "noop"
@@ -97,7 +97,7 @@ const (
     		    "tls": "true"
     		},
 			"store": {
-				"interval": "300"
+				"interval": "5"
 			},
 			"auth": {
 				"type": "noop"
@@ -149,7 +149,7 @@ func TestNewValidConfig(t *testing.T) {
 				Tls:  true,
 			},
 			Store: Store{
-				Interval: 300,
+				Interval: 5,
 			},
 			Auth: Auth{
 				Type: "noop",

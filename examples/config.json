@@ -10,7 +10,7 @@
         "url": "https://oauth.server/oauth2/token"
     },
     "store": {
-        "interval": 300
+        "interval": 5
     },
     "server": {
         "cert": "",

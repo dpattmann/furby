@@ -31,7 +31,7 @@ type MemoryStore struct {
 
 func (s *MemoryStore) BackgroundUpdate(interval int) {
 	for {
-		<-time.After(time.Second * time.Duration(interval))
+		<-time.After(time.Minute * time.Duration(interval))
 
 		fmt.Println("Updating token")
 		if _, err := s.updateToken(); err != nil {
