@@ -47,6 +47,7 @@ func main() {
 	tokenHandler := handler.NewTokenHandler(memoryStore, authorizer)
 
 	http.Handle("/metrics", promhttp.HandlerFor(metrics.PrometheusRegister, promhttp.HandlerOpts{}))
+	http.Handle("/health", handler.HealthHandler())
 	http.Handle("/", tokenHandler)
 
 	if c.Server.Tls {

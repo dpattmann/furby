@@ -1,5 +1,8 @@
 # What is Furby?
 
+[![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f)](http://golang.org)
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/dpattmann/furby)](https://github.com/dpattman/furby)
+
 Furby is an easy and simple to use OAuth2 Token cache. Run Furby in your microservice
 infrastructure to move the OAuth2.0 Token management out of your services.
 

@@ -43,6 +43,15 @@ func TestHeaderAuthorizer_IsAuthorized(t *testing.T) {
 			want: true,
 		},
 		{
+			name: "Header name case insensitive",
+			fields: fields{
+				headerName:   "x-furby-header",
+				headerValues: []string{"value"},
+			},
+			args: args{r: req},
+			want: true,
+		},
+		{
 			name: "Header not found",
 			fields: fields{
 				headerName:   "X-Not-Furby-Header",
