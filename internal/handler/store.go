@@ -10,19 +10,19 @@ import (
 	"github.com/dpattmann/furby/internal/store"
 )
 
-type TokenHandler struct {
+type StoreHandler struct {
 	store store.Store
 	auth  auth.Authorizer
 }
 
-func NewTokenHandler(store store.Store, auth auth.Authorizer) TokenHandler {
-	return TokenHandler{
+func NewStoreHandler(store store.Store, auth auth.Authorizer) StoreHandler {
+	return StoreHandler{
 		store: store,
 		auth:  auth,
 	}
 }
 
-func (t TokenHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (t StoreHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	metrics.ReceivedRequests.Inc()
 
 	timer := prometheus.NewTimer(metrics.RequestTime)

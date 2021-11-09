@@ -34,11 +34,11 @@ func main() {
 
 	for _, s := range c.Stores {
 		clientCredentialsConfig := store.NewClientCredentialsConfig(s.Credentials)
-		memoryStore := store.NewMemoryStore(clientCredentialsConfig)
+		tokenStore := store.NewMemoryStore(clientCredentialsConfig)
 
 		for _, s := range c.Stores {
 			if s.Interval > 0 {
-				go memoryStore.BackgroundUpdate(s.Interval)
+				go tokenStore.BackgroundUpdate(s.Interval)
 			}
 		}
 
@@ -51,7 +51,7 @@ func main() {
 			authorizer = auth.NewNoOpAuthorizer()
 		}
 
-		tokenHandler := handler.NewTokenHandler(memoryStore, authorizer)
+		tokenHandler := handler.NewStoreHandler(tokenStore, authorizer)
 
 		m.Handle(s.Path, tokenHandler)
 	}
