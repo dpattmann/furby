@@ -1,12 +1,12 @@
-auth:
-  type: 'noop'
-
-credentials:
-  id: "integration-tests"
-  secret: "secret"
-  scopes:
-    - "scope1"
-  url: "http://localhost:4444/oauth2/token"
-
-store:
-  interval: 1
+---
+stores:
+  - interval: 1
+    path: /
+    credentials:
+      id: integration
+      secret: secret
+      scopes:
+        - scope1
+      url: http://localhost:4444/oauth2/token
+    auth:
+      type: noop
