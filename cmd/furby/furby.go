@@ -28,27 +28,32 @@ func main() {
 		log.Fatalf("Can't read config: %v", err)
 	}
 
-	clientCredentialsConfig := store.NewClientCredentialsConfig(c.Credentials)
-	memoryStore := store.NewMemoryStore(clientCredentialsConfig)
+	for _, s := range c.Stores {
+		clientCredentialsConfig := store.NewClientCredentialsConfig(s.Credentials)
+		memoryStore := store.NewMemoryStore(clientCredentialsConfig)
 
-	if c.Store.Interval > 0 {
-		go memoryStore.BackgroundUpdate(c.Store.Interval)
+		for _, s := range c.Stores {
+			if s.Interval > 0 {
+				go memoryStore.BackgroundUpdate(s.Interval)
+			}
+		}
+
+		switch s.Auth.Type {
+		case "user-agent":
+			authorizer = auth.NewUserAgentAuthorizer(s.Auth.UserAgents)
+		case "header":
+			authorizer = auth.NewHeaderAuthorizer(s.Auth.HeaderName, s.Auth.HeaderValues)
+		default:
+			authorizer = auth.NewNoOpAuthorizer()
+		}
+
+		tokenHandler := handler.NewTokenHandler(memoryStore, authorizer)
+
+		http.Handle(s.Path, tokenHandler)
 	}
-
-	switch c.Auth.Type {
-	case "user-agent":
-		authorizer = auth.NewUserAgentAuthorizer(c.Auth.UserAgents)
-	case "header":
-		authorizer = auth.NewHeaderAuthorizer(c.Auth.HeaderName, c.Auth.HeaderValues)
-	default:
-		authorizer = auth.NewNoOpAuthorizer()
-	}
-
-	tokenHandler := handler.NewTokenHandler(memoryStore, authorizer)
 
 	http.Handle("/metrics", promhttp.HandlerFor(metrics.PrometheusRegister, promhttp.HandlerOpts{}))
 	http.Handle("/health", handler.HealthHandler())
-	http.Handle("/", tokenHandler)
 
 	if c.Server.Tls {
 		if err := http.ListenAndServeTLS(c.Server.Addr, c.Server.Cert, c.Server.Key, nil); err != nil {

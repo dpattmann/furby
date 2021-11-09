@@ -10,98 +10,29 @@ import (
 
 const (
 	validConfig = `
-		{    
-			"credentials" : {
-        		"id": "TestClientId",
-        		"scopes": [
-        		    "scopeA",
-        		    "scopeB"
-        		],
-        		"secret": "TestClientSecret",
-        		"url": "https://localhost"
-			},
-			"store": {
-				"interval": "5"
-			},
-    		"server": {
+		{
+			"stores": [{
+				"interval": "5",
+				"path": "/",
+				"credentials" : {
+			  		"id": "TestClientId",
+			  		"scopes": [
+						"scopeA",
+						"scopeB"
+			  		],
+			  	"secret": "TestClientSecret",
+			  	"url": "https://localhost"
+				},
+				"auth": {
+					"type": "noop"
+				}
+			}],
+			"server": {
 				"addr": ":8443",
-    		    "cert": "foo.cert",
-    		    "key": "foo.key",
-    		    "tls": "true"
-    		},
-			"auth": {
-				"type": "noop"
-			}
-		}
-	`
-	configWithInvalidUrl = `
-		{    
-			"credentials" : {
-        		"id": "TestClientId",
-        		"scopes": [
-        		    "scopeA",
-        		    "scopeB"
-        		],
-        		"secret": "TestClientSecret",
-        		"url": "localhost"
-			},
-			"store": {
-				"interval": "5"
-			},
-			"auth": {
-				"type": "noop"
-			}
-		}
-	`
-	configWithDisabledTls = `
-		{    
-			"credentials" : {
-        		"id": "TestClientId",
-        		"scopes": [
-        		    "scopeA",
-        		    "scopeB"
-        		],
-        		"secret": "TestClientSecret",
-        		"url": "https://localhost"
-			},
-    		"server": {
-				"addr": ":8443",
-    		    "cert": "",
-    		    "key": "",
-    		    "tls": "false"
-    		},
-			"store": {
-				"interval": "5"
-			},
-			"auth": {
-				"type": "noop"
-			}
-		}
-	`
-
-	configWithTlsButWithoutCert = `
-		{    
-			"credentials" : {
-        		"id": "TestClientId",
-        		"scopes": [
-        		    "scopeA",
-        		    "scopeB"
-        		],
-        		"secret": "TestClientSecret",
-        		"url": "https://localhost"
-			},
-    		"server": {
-				"addr": ":8443",
-    		    "cert": "",
-    		    "key": "",
-    		    "tls": "true"
-    		},
-			"store": {
-				"interval": "5"
-			},
-			"auth": {
-				"type": "noop"
-			}
+				"cert": "foo.cert",
+				"key": "foo.key",
+				"tls": "true"
+		  	}
 		}
 	`
 )
@@ -136,23 +67,26 @@ func TestNewValidConfig(t *testing.T) {
 		got, err := NewConfig("./test_temp.json")
 
 		want := &Config{
-			Credentials: Credentials{
-				Id:     "TestClientId",
-				Scopes: []string{"scopeA", "scopeB"},
-				Secret: "TestClientSecret",
-				Url:    "https://localhost",
-			},
 			Server: Server{
 				Addr: ":8443",
 				Cert: "foo.cert",
 				Key:  "foo.key",
 				Tls:  true,
 			},
-			Store: Store{
-				Interval: 5,
-			},
-			Auth: Auth{
-				Type: "noop",
+			Stores: []Store{
+				{
+					Interval: 5,
+					Path:     "/",
+					Credentials: Credentials{
+						Id:     "TestClientId",
+						Scopes: []string{"scopeA", "scopeB"},
+						Secret: "TestClientSecret",
+						Url:    "https://localhost",
+					},
+					Auth: Auth{
+						Type: "noop",
+					},
+				},
 			},
 		}
 
@@ -163,38 +97,85 @@ func TestNewValidConfig(t *testing.T) {
 	})
 }
 
-func TestNewFailureConfig(t *testing.T) {
+func TestConfig_validate(t *testing.T) {
+	type fields struct {
+		Server Server
+		Stores []Store
+	}
 	tests := []struct {
-		testCase        string
-		testDescription string
-		wantErr         bool
+		name    string
+		fields  fields
+		wantErr bool
 	}{
 		{
-			testCase:        configWithInvalidUrl,
-			testDescription: "Create config with invalid url",
-			wantErr:         true,
+			name: "Should return no validation error on valid config",
+			fields: fields{
+				Stores: []Store{
+					{
+						Path:     "/",
+						Interval: 5,
+						Auth: Auth{
+							Type: "noop",
+						},
+						Credentials: Credentials{
+							Id:     "ClientId",
+							Secret: "ClientSecret",
+							Url:    "https://localhost/oauth2/token",
+						},
+					},
+				},
+				Server: Server{
+					Addr: ":8080",
+					Tls:  false,
+				},
+			},
+			wantErr: false,
 		},
 		{
-			testCase:        configWithDisabledTls,
-			testDescription: "Create config without tls config",
-			wantErr:         false,
+			name: "Should return validation error if tls is true but no cert and key is specified",
+			fields: fields{
+				Stores: []Store{
+					{
+						Path:     "/",
+						Interval: 5,
+						Auth: Auth{
+							Type: "noop",
+						},
+						Credentials: Credentials{
+							Id:     "ClientId",
+							Secret: "ClientSecret",
+							Url:    "https://localhost/oauth2/token",
+						},
+					},
+				},
+				Server: Server{
+					Addr: ":8080",
+					Tls:  true,
+				},
+			},
+			wantErr: true,
 		},
 		{
-			testCase:        configWithTlsButWithoutCert,
-			testDescription: "Create config with tls but without cert files",
-			wantErr:         true,
+			name: "Should return validation error if no store is specified",
+			fields: fields{
+				Stores: []Store{},
+				Server: Server{
+					Addr: ":8080",
+					Tls:  false,
+				},
+			},
+			wantErr: true,
 		},
 	}
-
 	for _, tt := range tests {
-		t.Run(tt.testDescription, func(t *testing.T) {
-			err := createTempConfig(tt.testCase)
-			assert.NoError(t, err)
-			if _, err := NewConfig("./test_temp.json"); (err != nil) != tt.wantErr {
-				t.Errorf("Expected %v, wantErr %v", err, tt.wantErr)
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Config{
+				Server: tt.fields.Server,
+				Stores: tt.fields.Stores,
 			}
-			removeTempConfig()
+			if err := c.validate(); (err != nil) != tt.wantErr {
+				t.Errorf("validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
 		})
 	}
-
 }

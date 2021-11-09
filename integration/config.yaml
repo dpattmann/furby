@@ -9,4 +9,4 @@ credentials:
   url: "http://localhost:4444/oauth2/token"
 
 store:
-  interval: 60
+  interval: 1

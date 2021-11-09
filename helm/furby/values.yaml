@@ -82,7 +82,12 @@ tolerations: []
 affinity: {}
 
 config:
-  credentials:
-    id: "defaultClientId"
-    secret: "defaultSecret"
-    url: "https://oauth.server/oauth2/token"
+  stores:
+    - interval: '5'
+      path: /
+      credentials:
+        id: defaultClientId
+        secret: defaultClientId
+        url: https://oauth.server/oauth2/token
+      auth:
+        type: noop

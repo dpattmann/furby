@@ -5,15 +5,24 @@ import (
 	"github.com/knadh/koanf"
 )
 
+var (
+	defaultConfig = map[string]interface{}{
+		"auth.type":   "noop",
+		"server.addr": ":8443",
+		"server.tls":  false,
+	}
+)
+
 type Config struct {
-	Auth        Auth        `koanf:"auth" validate:"required"`
-	Credentials Credentials `koanf:"credentials" validate:"required"`
-	Server      Server      `koanf:"server" validate:"required"`
-	Store       Store       `koanf:"store" validate:"required"`
+	Server Server  `koanf:"server" validate:"required"`
+	Stores []Store `koanf:"stores" validate:"required,gt=0,dive,required"`
 }
 
 type Store struct {
-	Interval int `koanf:"interval" validate:"required"`
+	Path        string      `koanf:"path" validate:"required"`
+	Interval    int         `koanf:"interval" validate:"required"`
+	Auth        Auth        `koanf:"auth" validate:"required"`
+	Credentials Credentials `koanf:"credentials" validate:"required"`
 }
 
 type Auth struct {
@@ -47,7 +56,7 @@ func (c *Config) validate() (err error) {
 func NewConfig(path string) (config *Config, err error) {
 	var k = koanf.New(".")
 
-	builder := NewBuilder(k, path)
+	builder := NewBuilder(k, path, defaultConfig)
 
 	err = builder.loadConfig()
 	if err != nil {

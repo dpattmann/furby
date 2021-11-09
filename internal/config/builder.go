@@ -12,12 +12,13 @@ import (
 )
 
 type Builder struct {
-	k    *koanf.Koanf
-	path string
+	k             *koanf.Koanf
+	path          string
+	defaultConfig map[string]interface{}
 }
 
-func NewBuilder(k *koanf.Koanf, path string) *Builder {
-	return &Builder{k: k, path: path}
+func NewBuilder(k *koanf.Koanf, path string, config map[string]interface{}) *Builder {
+	return &Builder{k: k, path: path, defaultConfig: config}
 }
 
 func (c *Builder) unmarshalConfigToStruct(config *Config) error {
@@ -35,12 +36,7 @@ func (c *Builder) loadConfig() (err error) {
 
 // LoadConfigMap is used to set default values
 func (c *Builder) loadConfigMap() error {
-	return c.k.Load(confmap.Provider(map[string]interface{}{
-		"auth.type":      "noop",
-		"server.addr":    ":8443",
-		"server.tls":     false,
-		"store.interval": 5,
-	}, "."), nil)
+	return c.k.Load(confmap.Provider(c.defaultConfig, "."), nil)
 }
 
 func (c *Builder) loadConfigFile() error {
