@@ -28,6 +28,10 @@ func main() {
 		log.Fatalf("Can't read config: %v", err)
 	}
 
+	// The defaultMuxRouter exposes /debug/vars as a default route. As we don't want this,
+	// we create a new router
+	m := http.NewServeMux()
+
 	for _, s := range c.Stores {
 		clientCredentialsConfig := store.NewClientCredentialsConfig(s.Credentials)
 		memoryStore := store.NewMemoryStore(clientCredentialsConfig)
@@ -49,19 +53,24 @@ func main() {
 
 		tokenHandler := handler.NewTokenHandler(memoryStore, authorizer)
 
-		http.Handle(s.Path, tokenHandler)
+		m.Handle(s.Path, tokenHandler)
 	}
 
-	http.Handle("/metrics", promhttp.HandlerFor(metrics.PrometheusRegister, promhttp.HandlerOpts{}))
-	http.Handle("/health", handler.HealthHandler())
+	m.Handle("/metrics", promhttp.HandlerFor(metrics.PrometheusRegister, promhttp.HandlerOpts{}))
+	m.Handle("/health", handler.HealthHandler())
+
+	s := http.Server{
+		Addr:    ":8443",
+		Handler: m,
+	}
 
 	if c.Server.Tls {
-		if err := http.ListenAndServeTLS(c.Server.Addr, c.Server.Cert, c.Server.Key, nil); err != nil {
+		if err := s.ListenAndServeTLS(c.Server.Cert, c.Server.Key); err != nil {
 			log.Fatal("Error running server")
 		}
 	}
 
-	if err := http.ListenAndServe(c.Server.Addr, nil); err != nil {
+	if err := s.ListenAndServe(); err != nil {
 		log.Fatal("Error running server")
 	}
 }
