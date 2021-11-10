@@ -16,7 +16,7 @@ go build cmd/furby/furby.go
 
 ### Configuration by configuration file
 
-Configuration can be passed with json or yaml file by command line argument "--path" or "-p". See example configs.
+Configuration can be passed with json or yaml file by command line argument "--config" or "-c". See example configs.
 
 ## Config
 
@@ -24,20 +24,19 @@ Configuration can be passed with json or yaml file by command line argument "--p
 
 ```yaml
 ---
-auth:
-    type: "noop|user-agent|header"
-    user-agents: [] # required if type is user-agent
-    header-name: "" # required if type is header
-    header-value: [] # required if type is header
-
-credentials:
-    id: "ClientId"
-    scopes: []
-    secret: "ClientSecret"
-    url: "https://oauth.server/oauth2/token"
-
-store:
-    interval: 5 # default
+stores:
+  - interval: 5 # time in minutes
+    path: /token # Handler path
+    credentials:
+      id: "ClientId"
+      scopes: []
+      secret: "ClientSecret"
+      url: "https://oauth.server/oauth2/token"
+    auth:
+      type: "noop|user-agent|header"
+      user-agents: [] # required if type is user-agent
+      header-name: "" # required if type is header
+      header-value: [] # required if type is header
 
 server:
     addr: ":8080" # default

@@ -14,12 +14,8 @@ import (
 	flag "github.com/spf13/pflag"
 )
 
-var (
-	authorizer auth.Authorizer
-)
-
 func main() {
-	path := flag.StringP("path", "p", "/etc/furby/config.yaml", "parameter file")
+	path := flag.StringP("config", "c", "/etc/furby/config.yaml", "config file")
 	flag.Parse()
 
 	c, err := config.NewConfig(*path)
@@ -42,6 +38,7 @@ func main() {
 			}
 		}
 
+		var authorizer auth.Authorizer
 		switch s.Auth.Type {
 		case "user-agent":
 			authorizer = auth.NewUserAgentAuthorizer(s.Auth.UserAgents)
