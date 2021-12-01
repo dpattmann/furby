@@ -1,20 +1,36 @@
 {
-    "auth" : {
+  "server": {
+    "tls": false
+  },
+  "stores": [
+    {
+      "interval": 5,
+      "path": "/",
+      "target": "https://api.gateway",
+      "credentials": {
+        "id": "integration-tests",
+        "scopes": [],
+        "secret": "secret",
+        "url": "http://localhost:4444/oauth2/token"
+      },
+      "auth": {
         "type": "noop",
         "user-agents": []
+      }
     },
-    "credentials" : {
-        "id": "ClientId",
+    {
+      "interval": 5,
+      "path": "/_cache",
+      "credentials": {
+        "id": "integration-tests",
         "scopes": [],
-        "secret": "ClientSecret",
-        "url": "https://oauth.server/oauth2/token"
-    },
-    "store": {
-        "interval": 5
-    },
-    "server": {
-        "cert": "",
-        "key": "",
-        "tls": false
+        "secret": "secret",
+        "url": "http://localhost:4444/oauth2/token"
+      },
+      "auth": {
+        "type": "noop",
+        "user-agents": []
+      }
     }
+  ]
 }

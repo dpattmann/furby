@@ -10,3 +10,6 @@ stores:
       url: http://localhost:4444/oauth2/token
     auth:
       type: noop
+
+server:
+  tls: false

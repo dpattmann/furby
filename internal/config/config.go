@@ -19,6 +19,7 @@ type Config struct {
 }
 
 type Store struct {
+	Target      string      `koanf:"target" validate:"omitempty,url"`
 	Path        string      `koanf:"path" validate:"required"`
 	Interval    int         `koanf:"interval" validate:"required"`
 	Auth        Auth        `koanf:"auth" validate:"required"`

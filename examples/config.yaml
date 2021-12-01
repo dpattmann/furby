@@ -1,19 +1,26 @@
 ---
-
-auth:
-    type: "noop"
-    user-agents: []
-
-credentials:
-    id: "ClientId"
-    scopes: []
-    secret: "ClientSecret"
-    url: "https://oauth.server/oauth2/token"
-
-store:
-    interval: 5
+stores:
+  - interval: 1
+    path: /
+    target: "https://api.gateway"
+    auth:
+      type: "noop"
+      user-agents: [ ]
+    credentials:
+      id: "ClientId"
+      scopes: [ ]
+      secret: "ClientSecret"
+      url: "https://oauth.server/oauth2/token"
+  - interval: 1
+    path: /_cache
+    auth:
+      type: "noop"
+      user-agents: [ ]
+    credentials:
+      id: "ClientId"
+      scopes: [ ]
+      secret: "ClientSecret"
+      url: "https://oauth.server/oauth2/token"
 
 server:
-    cert: ""
-    key: ""
-    tls: false
+  tls: false

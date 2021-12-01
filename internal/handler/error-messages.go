@@ -5,4 +5,5 @@ const (
 	JsonParseError  = "Error parsing JSON"
 	TeapotMessage   = "I'm a teapot"
 	Unauthorized    = "Not authorized"
+	ProxyError      = "Proxy error"
 )

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/dpattmann/furby/internal/auth"
 	"github.com/dpattmann/furby/internal/config"
@@ -48,9 +49,17 @@ func main() {
 			authorizer = auth.NewNoOpAuthorizer()
 		}
 
-		tokenHandler := handler.NewStoreHandler(tokenStore, authorizer)
-
-		m.Handle(s.Path, tokenHandler)
+		if s.Target != "" {
+			target, err := url.Parse("https://www.google.de")
+			if err != nil {
+				log.Fatalf("Can't parse url. Error: %v", err)
+			}
+			proxyHandler := handler.NewProxyHandler(target, tokenStore, authorizer)
+			m.Handle(s.Path, proxyHandler)
+		} else {
+			tokenHandler := handler.NewStoreHandler(tokenStore, authorizer)
+			m.Handle(s.Path, tokenHandler)
+		}
 	}
 
 	m.Handle("/metrics", promhttp.HandlerFor(metrics.PrometheusRegister, promhttp.HandlerOpts{}))
