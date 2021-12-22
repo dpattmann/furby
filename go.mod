@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/go-playground/validator/v10 v10.9.0
-	github.com/jarcoal/httpmock v1.0.8
+	github.com/jarcoal/httpmock v1.1.0
 	github.com/knadh/koanf v1.3.3
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/pflag v1.0.5
