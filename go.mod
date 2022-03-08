@@ -3,7 +3,7 @@ module github.com/dpattmann/furby
 go 1.16
 
 require (
-	github.com/go-playground/validator/v10 v10.10.0
+	github.com/go-playground/validator/v10 v10.10.1
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/knadh/koanf v1.4.0
 	github.com/prometheus/client_golang v1.12.1
